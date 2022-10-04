@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<ApplicationDbContext>();
+
+
 var app = builder.Build();
 var configuration = app.Configuration;
 ProductRepository.Init(configuration);
@@ -87,11 +91,19 @@ public static void Init(IConfiguration configuration){
 }
 
 public class Product{
+    public int Id { get; set; }
     public string Code { get; set;}
     public string Name { get; set;}
 }
 
+/*criando conexão com o banco de dados*/
+public class ApplicationDbContext : DbContext{
+    public DbSet<Product> Products { get; set; }
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
+        =>options.UseSqlServer(
+            "Server=localhost;Database=Products;User Id=sa;Password=@sql2019;MultipleActiveResultsSets=true;Encrypt=YES,TrustServerCertificate=YES");
     
+}
 
 
 
