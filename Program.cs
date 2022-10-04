@@ -13,10 +13,7 @@ app.MapGet("/AddHeader", (HttpResponse response)=> {
     return "Retorno";
     });
 
-/*Parte de Post da aplicação usada para postar dados da aplicação*/
-app.MapPost("/saveproduct", (Product product) => {
-    ProductRepository.Add(product);
-});
+
 
 /*parte get que pega da aplicação*/
 //api.app.com/users?datastart={date}&dateend={date}
@@ -24,12 +21,7 @@ app.MapGet("/getproduct", ([FromQuery] string dateStart,[FromQuery] string dateE
     return dateStart + " - "+ dateEnd;
 });
 
-/*get que é usado para pegar um dado especifico, ele retorna um do tipo produto*/
-//api.app.com/users/{code}
-app.MapGet("/getproduct/{code}", ([FromRoute] string code) => {
-    var product = ProductRepository.GetBy(code);
-    return product;
-});
+
 
 /*get que pega dadods direto do cabeçalho*/
 //api.app.com/users?datastart={date}&dateend={date}
@@ -37,14 +29,28 @@ app.MapGet("/getproductbyheader", (HttpRequest request)=>{
     return request.Headers["product-code"].ToString();
 });
 
+
+
+
+/*Metodos principais abaixo*/
+/*Parte de Post da aplicação usada para postar dados da aplicação*/
+app.MapPost("/products", (Product product) => {
+    ProductRepository.Add(product);
+});
+/*get que é usado para pegar um dado especifico, ele retorna um do tipo produto*/
+//api.app.com/users/{code}
+app.MapGet("/products/{code}", ([FromRoute] string code) => {
+    var product = ProductRepository.GetBy(code);
+    return product;
+});
+
 /*metodo usado para fazer o put, mudar o dado de um determinado numero*/
-app.MapPut("/editproduct", (Product product) => {
+app.MapPut("/products", (Product product) => {
     var productSaved = ProductRepository.GetBy(product.Code);
     productSaved.Name = product.Name;
 });
-
 /*Delete usado para deletar um dados*/
-app.MapDelete("/deleteproduct/{code}",([FromRoute] string code) => {
+app.MapDelete("/products/{code}",([FromRoute] string code) => {
     var productSaved = ProductRepository.GetBy(code);
     ProductRepository.Remove(productSaved);
 });
